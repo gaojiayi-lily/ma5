@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="utf-8">
+        <title>MA5</title>
+        <style>
+            .container{
+                margin: 20px auto;
+                background-color:#fff;
+                display:grid;
+                grid-template-columns: 100px 100px;
+                grid-row: auto auto;
+            }
+        </style>
+    </head>
+
+    <body>
+        Count: <span id="displayCount">0</span>
+        <div class="container">
+            <my-box></my-box>
+            <my-box></my-box>
+            <my-box></my-box>
+            <my-box></my-box>
+        </div>
+        <script>
+
+            const boxTemplate = document.createElement('custom-box');
+            let count = 0;
+
+            boxTemplate.innerHTML = `
+            <style>
+                div {
+                    height: 100px;
+                    width: 100px;
+                    border: 1px solid grey;
+                    backgroundColor: white;
+                }
+            </style>
+            <div></div>
+            `;
+
+            class MyBox extends HTMLElement {
+
+                constructor() {
+                    super();
+
+                    this.attachShadow({mode: 'open'})
+
+                    this.shadowRoot.appendChild(boxTemplate.cloneNode(true));
+                }
+
+                toggleColor() {
+                    var displayCount = document.getElementById("displayCount");
+                    let backgroundColor = this.shadowRoot.querySelector('div').style.backgroundColor;
+                    console.log(backgroundColor);
+                    if (backgroundColor == "") {backgroundColor = "white";}
+                    console.log(backgroundColor);
+                    if(backgroundColor == "white") {
+                        this.shadowRoot.querySelector('div').style.backgroundColor = "black";
+                        count++;
+                        console.log(count);
+                    } else {
+                        this.shadowRoot.querySelector('div').style.backgroundColor = "white";
+                        if (count > 0) {count--;}
+                        console.log(count);
+                    }
+                    displayCount.innerHTML = count;
+                }
+
+                connectedCallback() {
+                    this.shadowRoot.querySelector('div')
+                    .addEventListener('click', 
+                    () => this.toggleColor())
+                    
+                }
+            }
+
+            window.customElements.define('my-box', MyBox);
+
+        </script>
+    </body>
+
+</html>
